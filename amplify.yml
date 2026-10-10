@@ -1,0 +1,10 @@
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - echo "Publishing static frontend assets"
+  artifacts:
+    baseDirectory: frontend
+    files:
+      - '**/*'

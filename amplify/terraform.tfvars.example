@@ -1,0 +1,6 @@
+aws_region            = "us-west-2"
+app_name               = "gatewaylab"
+amplify_app_id         = "replace-with-amplify-app-id"
+github_branch          = "main"
+hosted_zone_name       = "kaiac.io"
+subdomain_prefix       = "gatewaylab"

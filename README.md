@@ -96,6 +96,25 @@ Depuis la racine du projet, lancer `npm run frontend`, puis ouvrir `http://127.0
 
 L'API autorise CORS depuis toutes les origines pour permettre cette interface locale. Après une modification du serveur, relancer le déploiement pour que les nouvelles en-têtes soient actives sur AWS. CORS n'est pas une authentification : l'accès reste limité par le security group à l'IPv4 autorisée, et toute page ouverte depuis ce réseau pourra appeler l'API. Ne pas ouvrir le security group à Internet.
 
+## Déploiement de la console sur Amplify
+
+Le dossier `amplify/` contient un Terraform indépendant qui associe une application Amplify existante à `https://gatewaylab.kaiac.io`. Pour réutiliser l'autorisation GitHub OAuth de la console Amplify sans PAT Terraform, créer l'application dans Amplify Console, connecter le dépôt `agoralabs/aws-llm-gateway` et sa branche `main`, puis récupérer l'App ID. Le fichier racine `amplify.yml` publie les fichiers statiques de `frontend/`. Amplify gère le certificat HTTPS; Terraform crée les enregistrements DNS de validation et le CNAME du site.
+
+Depuis la VM, dans un shell root, fournir l'App ID puis appliquer le Terraform :
+
+```bash
+cd /vagrant/aws-llm-gateway/amplify
+export AWS_PROFILE=default AWS_REGION=us-west-2
+read -r -p "Amplify app ID: " TF_VAR_amplify_app_id
+export TF_VAR_amplify_app_id
+terraform init
+terraform plan
+terraform apply
+unset TF_VAR_amplify_app_id
+```
+
+Terraform ne crée ni ne modifie la liaison GitHub de l'application; cette liaison reste gérée par Amplify Console. La console continue d'appeler directement `https://llm.kaiac.io` et `wss://llm.kaiac.io/v1/ws`; CORS est déjà activé sur l'API. L'ALB du gateway reste limité à l'IPv4 autorisée par son security group : le navigateur doit accéder depuis cette IP, car Amplify héberge les fichiers statiques et ne relaie pas les appels API.
+
 ## Collection Postman
 
 Importer dans Postman :
