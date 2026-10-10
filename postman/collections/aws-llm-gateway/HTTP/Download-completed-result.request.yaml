@@ -1,0 +1,5 @@
+$kind: http-request
+name: Download completed result
+method: GET
+url: '{{baseUrl}}/v1/jobs/{{jobId}}/result'
+order: 4000

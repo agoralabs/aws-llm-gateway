@@ -1,0 +1,4 @@
+$kind: websocket-request
+name: Cancel job
+url: '{{wsUrl}}'
+order: 4000

@@ -1,0 +1,88 @@
+{
+  "info": {
+    "_postman_id": "7a860e74-415e-4738-9750-2674cf51fa1c",
+    "name": "AWS LLM Gateway",
+    "description": "Endpoints de la gateway personnelle. L'accès réseau est filtré par l'IP autorisée côté ALB; aucun Bearer/JWT n'est requis. Pour les requêtes WebSocket, ouvrir la connexion puis envoyer le JSON indiqué dans la description de chaque requête.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "HTTP",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health" }
+          }
+        },
+        {
+          "name": "List allowed models",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/models" }
+          }
+        },
+        {
+          "name": "Get job status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/jobs/{{jobId}}" }
+          }
+        },
+        {
+          "name": "Download completed result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/jobs/{{jobId}}/result" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "WebSocket",
+      "item": [
+        {
+          "name": "Connect to generation stream",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{wsUrl}}" }
+          },
+          "description": "Ouvrir cette connexion WebSocket sans Authorization. Après l'upgrade, envoyer l'un des messages des requêtes suivantes dans l'onglet Messages de Postman."
+        },
+        {
+          "name": "Start generation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{wsUrl}}" }
+          },
+          "description": "Message à envoyer sur la connexion WebSocket :\n\n```json\n{\n  \"action\": \"startGeneration\",\n  \"requestId\": \"{{$guid}}\",\n  \"model\": \"{{model}}\",\n  \"prompt\": \"Explique brièvement le principe des files SQS FIFO.\"\n}\n```\n\nRéponses attendues : `accepted`, puis un ou plusieurs `delta`, puis `completed` (ou un statut d'erreur). Enregistrer le `jobId` reçu dans l'environnement Postman."
+        },
+        {
+          "name": "Watch job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{wsUrl}}" }
+          },
+          "description": "Message à envoyer après connexion pour recevoir l'état et écouter les deltas :\n\n```json\n{\n  \"action\": \"watchJob\",\n  \"jobId\": \"{{jobId}}\"\n}\n```"
+        },
+        {
+          "name": "Cancel job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{wsUrl}}" }
+          },
+          "description": "Message à envoyer sur la connexion WebSocket :\n\n```json\n{\n  \"action\": \"cancelJob\",\n  \"jobId\": \"{{jobId}}\"\n}\n```\n\nL'annulation est best-effort; le résultat partiel est conservé dans S3."
+        }
+      ]
+    }
+  ]
+}

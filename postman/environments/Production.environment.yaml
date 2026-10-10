@@ -1,0 +1,11 @@
+name: Production
+values:
+  - key: baseUrl
+    value: 'https://llm.kaiac.io'
+  - key: wsUrl
+    value: 'wss://llm.kaiac.io/v1/ws'
+  - key: jobId
+    value: ''
+  - key: model
+    value: gpt-5.4
+color: 120

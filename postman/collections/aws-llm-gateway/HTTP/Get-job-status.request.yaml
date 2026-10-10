@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get job status
+method: GET
+url: '{{baseUrl}}/v1/jobs/{{jobId}}'
+order: 3000

@@ -1,0 +1,3 @@
+$kind: collection
+name: AWS LLM Gateway
+description: "Endpoints de la gateway personnelle. L'accès réseau est filtré par l'IP autorisée côté ALB; aucun Bearer/JWT n'est requis. Pour les requêtes WebSocket, ouvrir la connexion puis envoyer le JSON indiqué dans la description de chaque requête."

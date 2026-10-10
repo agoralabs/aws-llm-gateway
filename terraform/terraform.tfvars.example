@@ -1,0 +1,7 @@
+aws_region        = "us-west-2"
+hosted_zone_name  = "kaiac.io"
+domain_name       = "llm.kaiac.io"
+allowed_models    = "gpt-5.4,gpt-6-luna,claude-haiku-5.5,MAI-Code-1.1-Flash"
+max_prompt_bytes  = 204800
+max_output_bytes  = 26214400
+max_job_duration_ms = 3600000

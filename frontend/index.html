@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14231e">
+  <title>Gateway Lab | Console locale</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Gateway Lab, accueil"><span class="brand-mark">G</span><span class="brand-name">gateway<span>lab</span></span><span class="brand-divider"></span><span class="brand-caption">CONSOLE LOCALE</span></a>
+    <div class="target-control"><label for="target-url">Cible API</label><input id="target-url" type="url" spellcheck="false" value="https://llm.kaiac.io"><button id="apply-target" class="button button-quiet" type="button">Appliquer</button></div>
+    <div class="connection-chip" id="api-status" data-state="unknown" role="status"><span class="status-dot"></span><span id="api-status-text">API non testée</span></div>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro">
+      <div><p class="eyebrow"><span class="eyebrow-line"></span> OUTIL DE TEST · HTTP + WEBSOCKET</p><h1>Une console pour<br><em>chaque requête.</em></h1><p class="intro-copy">Soumettez un job, suivez son flux et inspectez chaque réponse du gateway.</p></div>
+      <div class="probe-panel"><div class="probe-heading"><span>01 / ENDPOINTS HTTP</span><span>PROBES</span></div><div class="probe-actions"><button class="probe-button" id="check-health" type="button"><span class="probe-method">GET</span><span>/health</span><span class="probe-arrow">↗</span></button><button class="probe-button" id="check-models" type="button"><span class="probe-method">GET</span><span>/v1/models</span><span class="probe-arrow">↗</span></button></div><p class="helper">La page appelle directement la cible. L’API doit autoriser CORS.</p></div>
+    </section>
+
+    <section class="console-grid" aria-label="Console de génération">
+      <section class="panel composer-panel">
+        <div class="panel-heading"><div><span class="panel-index">02</span><h2>Nouvelle génération</h2></div><span class="protocol-tag">WS · /v1/ws</span></div>
+        <div class="field-row"><label class="field-label" for="model-select">Modèle</label><div class="inline-field"><select id="model-select"><option value="gpt-5.4">gpt-5.4</option><option value="gpt-6-luna">GPT-6 Luna</option><option value="claude-haiku-5.5">Claude Haiku 5.5</option><option value="MAI-Code-1.1-Flash">MAI-Code-1.1-Flash</option></select><button id="refresh-models" class="button button-small" type="button">Actualiser</button></div></div>
+        <div class="field-row"><label class="field-label" for="request-id">Request ID <span>idempotence</span></label><div class="inline-field"><input id="request-id" type="text" maxlength="128" spellcheck="false"><button id="new-request-id" class="button button-small" type="button">Nouveau</button></div></div>
+        <div class="field-row prompt-field"><div class="label-line"><label class="field-label" for="prompt">Prompt</label><span id="prompt-count">0 octet</span></div><textarea id="prompt" rows="8" maxlength="204800" placeholder="Décrivez la tâche à confier à Copilot…"></textarea><p class="helper">Taille maximale côté gateway : 200 Ko.</p></div>
+        <div class="composer-footer"><button id="connect-ws" class="button button-outline" type="button"><span class="button-symbol">↔</span><span>Connecter WS</span></button><button id="send-generation" class="button button-primary" type="button" disabled><span>Envoyer le prompt</span><span class="button-end">↗</span></button></div>
+      </section>
+
+      <section class="panel stream-panel">
+        <div class="panel-heading"><div><span class="panel-index panel-index-orange">03</span><h2>Flux de réponse</h2></div><div class="stream-meta"><span id="ws-status" data-state="closed"><i class="status-dot"></i><span>Déconnecté</span></span><button id="clear-stream" class="text-button" type="button">Effacer</button></div></div>
+        <div class="job-strip"><span class="job-caption">JOB ACTIF</span><code id="active-job">Aucun job sélectionné</code><span class="job-state" id="job-state">En attente</span></div>
+        <div class="stream-output" id="stream-output" aria-live="polite"><div class="empty-stream"><span class="empty-mark">↓</span><p>Le flux de texte apparaîtra ici.</p><span>Connectez le WebSocket pour commencer.</span></div></div>
+        <div class="stream-footer"><span id="stream-bytes">0 octet reçu</span><span id="last-event">Aucun événement</span></div>
+      </section>
+    </section>
+
+    <section class="lower-grid">
+      <section class="panel inspect-panel">
+        <div class="panel-heading"><div><span class="panel-index panel-index-blue">04</span><h2>Inspecter un job</h2></div><span class="protocol-tag">HTTP + WS</span></div>
+        <label class="field-label" for="job-id">Job ID</label><div class="job-input-row"><input id="job-id" type="text" placeholder="job_…" spellcheck="false"><button id="get-job-http" class="button button-small" type="button">GET statut</button></div>
+        <div class="job-actions"><button id="get-job-ws" class="button button-outline" type="button" disabled>getJob · WS</button><button id="watch-job" class="button button-outline" type="button" disabled>watchJob · WS</button><button id="cancel-job" class="button button-danger" type="button" disabled>cancelJob · WS</button><button id="get-result" class="button button-dark" type="button">GET résultat</button></div>
+      </section>
+      <section class="panel response-panel"><div class="panel-heading"><div><span class="panel-index">05</span><h2>Réponses & événements</h2></div><button id="clear-log" class="text-button" type="button">Vider le journal</button></div><div class="event-list" id="event-list" aria-live="polite"></div></section>
+    </section>
+    <footer class="page-footer"><span>GATEWAY LAB <span class="footer-separator">/</span> SESSION LOCALE</span><span>Les prompts sont transmis à la cible configurée.</span></footer>
+  </main>
+</body>
+</html>

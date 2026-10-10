@@ -1,0 +1,4 @@
+$kind: websocket-request
+name: Watch job
+url: '{{wsUrl}}'
+order: 3000

@@ -1,0 +1,4 @@
+$kind: websocket-request
+name: Connect to generation stream
+url: '{{wsUrl}}'
+order: 1000

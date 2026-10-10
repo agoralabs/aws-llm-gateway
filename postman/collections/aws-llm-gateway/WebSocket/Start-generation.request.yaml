@@ -1,0 +1,4 @@
+$kind: websocket-request
+name: Start generation
+url: '{{wsUrl}}'
+order: 2000
