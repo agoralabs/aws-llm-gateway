@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node app/server.js",
     "check": "node --check app/server.js",
-    "frontend": "node frontend/dev-server.mjs"
+    "frontend": "npm --prefix frontend run dev -- --host 127.0.0.1 --port 4173"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.900.0",

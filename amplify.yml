@@ -1,10 +1,14 @@
 version: 1
 frontend:
   phases:
+    preBuild:
+      commands:
+        - nvm use 22
+        - cd frontend && npm ci --include=dev
     build:
       commands:
-        - echo "Publishing static frontend assets"
+        - cd frontend && npm run build
   artifacts:
-    baseDirectory: frontend
+    baseDirectory: frontend/dist
     files:
       - '**/*'

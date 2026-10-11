@@ -98,7 +98,7 @@ L'API autorise CORS depuis toutes les origines pour permettre cette interface lo
 
 ## Déploiement de la console sur Amplify
 
-Le dossier `amplify/` contient un Terraform indépendant qui associe une application Amplify existante à `https://gatewaylab.kaiac.io`. Pour réutiliser l'autorisation GitHub OAuth de la console Amplify sans PAT Terraform, créer l'application dans Amplify Console, connecter le dépôt `agoralabs/aws-llm-gateway` et sa branche `main`, puis récupérer l'App ID. Le fichier racine `amplify.yml` publie les fichiers statiques de `frontend/`. Amplify gère le certificat HTTPS; Terraform crée les enregistrements DNS de validation et le CNAME du site.
+Le dossier `amplify/` contient un Terraform indépendant qui associe une application Amplify existante à `https://gatewaylab.kaiac.io`. Pour réutiliser l'autorisation GitHub OAuth de la console Amplify sans PAT Terraform, créer l'application dans Amplify Console, connecter le dépôt `agoralabs/aws-llm-gateway` et sa branche `main`, puis récupérer l'App ID. Le fichier racine `amplify.yml` installe les dépendances frontend, construit le bundle et publie `frontend/dist/`. Amplify gère le certificat HTTPS; Terraform crée les enregistrements DNS de validation et le CNAME du site.
 
 Depuis la VM, dans un shell root, fournir l'App ID puis appliquer le Terraform :
 

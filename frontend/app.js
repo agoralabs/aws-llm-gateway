@@ -1,3 +1,6 @@
+import DOMPurify from "dompurify";
+import { marked } from "marked";
+
 const $ = (selector) => document.querySelector(selector);
 const DEFAULT_API = "https://llm.kaiac.io";
 const targetInput = $("#target-url");
@@ -13,6 +16,7 @@ let socket;
 let outputText = "";
 let outputBytes = 0;
 let activeJobId = "";
+let mermaidPromise;
 
 function apiBase() { return targetInput.value.trim().replace(/\/+$/, ""); }
 function apiUrl(path) { return `${apiBase()}${path}`; }
@@ -122,6 +126,41 @@ function appendDelta(text) {
   $("#stream-bytes").textContent = `${formatBytes(outputBytes)} reçus`;
   streamOutput.scrollTop = streamOutput.scrollHeight;
 }
+async function renderMarkdownOutput() {
+  if (!outputText.trim()) return;
+  const markdown = document.createElement("article");
+  markdown.className = "markdown-body";
+  markdown.innerHTML = DOMPurify.sanitize(marked.parse(outputText));
+  streamOutput.replaceChildren(markdown);
+
+  for (const codeBlock of markdown.querySelectorAll("pre > code.language-mermaid")) {
+    const source = codeBlock.textContent ?? "";
+    const figure = document.createElement("figure");
+    figure.className = "mermaid-diagram";
+    figure.setAttribute("role", "img");
+    figure.setAttribute("aria-label", "Diagramme Mermaid");
+    try {
+      mermaidPromise ??= import("mermaid").then(({ default: mermaid }) => {
+        mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "dark" });
+        return mermaid;
+      });
+      const mermaid = await mermaidPromise;
+      const id = `mermaid-${crypto.randomUUID()}`;
+      const { svg, bindFunctions } = await mermaid.render(id, source);
+      figure.innerHTML = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } });
+      bindFunctions?.(figure);
+    } catch {
+      const warning = document.createElement("p");
+      warning.className = "mermaid-error";
+      warning.textContent = "Diagramme Mermaid impossible à afficher.";
+      const fallback = document.createElement("pre");
+      fallback.textContent = source;
+      figure.append(warning, fallback);
+    }
+    codeBlock.parentElement?.replaceWith(figure);
+  }
+  streamOutput.scrollTop = streamOutput.scrollHeight;
+}
 function handleSocketMessage(raw) {
   let message;
   try { message = JSON.parse(raw); }
@@ -138,6 +177,7 @@ function handleSocketMessage(raw) {
     setActiveJob(message.jobId, message.status ?? "État reçu");
   } else if (["completed", "truncated", "cancelled", "interrupted", "failed"].includes(message.type)) {
     setActiveJob(message.jobId ?? activeJobId, message.type);
+    void renderMarkdownOutput();
   }
   recordEvent(`WS · ${message.type ?? "message"}`, message, { kind: message.type === "failed" ? "error" : "ok" });
 }
