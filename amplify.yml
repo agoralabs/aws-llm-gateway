@@ -4,10 +4,10 @@ frontend:
     preBuild:
       commands:
         - nvm use 22
-        - cd frontend && npm ci --include=dev
+        - (cd frontend && npm ci --include=dev)
     build:
       commands:
-        - cd frontend && npm run build
+        - (cd frontend && npm run build)
   artifacts:
     baseDirectory: frontend/dist
     files:
