@@ -141,7 +141,7 @@ async function renderMarkdownOutput() {
     figure.setAttribute("aria-label", "Diagramme Mermaid");
     try {
       mermaidPromise ??= import("mermaid").then(({ default: mermaid }) => {
-        mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "dark" });
+        mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "dark", htmlLabels: false });
         return mermaid;
       });
       const mermaid = await mermaidPromise;
